@@ -1,5 +1,6 @@
 from srcs.model.model import load_thetas, estimate_price
 
+
 def parse_float_input(message: str) -> float:
 	ret = float(input(message))
 	if (ret < 0 or ret != ret):

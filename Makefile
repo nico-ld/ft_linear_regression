@@ -19,4 +19,5 @@ clean:
 	@rm -rf srcs/prediction/__pycache__
 	@rm -rf srcs/render/__pycache__
 	@rm -rf srcs/training/__pycache__
+	@rm -rf srcs/ui/__pycache__
 	@rm -f thetas.json

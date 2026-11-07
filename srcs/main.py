@@ -1,7 +1,7 @@
 import sys
 
 from .bonus.plot import main as show_graph
-from .model.model import load_thetas
+from .model.model import save_thetas
 from .prediction.predict import predict
 from .render.render import render_screen, clear_lines
 from .training.train import main as train_model
@@ -13,8 +13,6 @@ from .ui.keys import read_key
 def run_action(name: str, dataset: str, train_set: tuple[float, int]) -> int:
 	if (name == "Train"):
 		train_model(train_set[0], train_set[1], dataset)
-	elif (name == "Train settings"):
-		return (training_settings(dataset, train_set))
 	elif (name == "Predict"):
 		predict()
 	elif (name == "Show graph"):
@@ -58,7 +56,15 @@ def run_menu(dataset: str, thetas_path: str) -> None:
 					print("\033[?25h", end="")
 					ret = 0
 					try:
-						ret = run_action(name, dataset, train_sett)
+						if (name == "Train settings"):
+							previous = dataset
+							dataset, train_sett, ret = training_settings(
+								dataset, train_sett
+							)
+							if (dataset != previous):
+								save_thetas(0.0, 0.0, thetas_path)
+						else:
+							ret = run_action(name, dataset, train_sett)
 					except KeyboardInterrupt:
 						print("\nInterrupted")
 					if (ret == 0):
