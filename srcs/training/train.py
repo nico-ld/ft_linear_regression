@@ -1,6 +1,5 @@
 from srcs.model.model import estimate_price, save_thetas
 from srcs.training.data import load_dataset, normalize, denormalize
-import sys
 
 
 def gradient_step(
@@ -20,6 +19,8 @@ def gradient_step(
 		error = estimate_price(x, thetas[0], thetas[1]) - y
 		sum_error += error
 		sum_error_x += error * x
+
+		index += 1
 
 	new_theta0 = thetas[0] - learning_rate * sum_error / lines
 	new_theta1 = thetas[1] - learning_rate * sum_error_x / lines
@@ -45,8 +46,6 @@ def train(
 
 def main(learning_rate: float = 0.1, iterations: int = 1000) -> None:
 	try:
-		learning_rate = 0.1
-		iterations = 1000
 		mileages, prices, lines = load_dataset("data.csv")
 		xs, lowest, highest = normalize(mileages)
 		t0, t1 = train((xs, prices), learning_rate, iterations, lines)
@@ -57,4 +56,4 @@ def main(learning_rate: float = 0.1, iterations: int = 1000) -> None:
 
 
 if (__name__ == "__main__"):
-	main(float(sys.argv[1]), int(sys.argv[2]))
+	main()
