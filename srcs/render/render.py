@@ -33,10 +33,11 @@ def render_separator(width: int = 50) -> int:
 def render_menu(options: list[str], selected: int, trained: bool, width: int = 50) -> int:
 	count = 0
 	for index, label in enumerate(options):
-		if (index == selected and not trained and (index == 1 or index == 2)):
-			style = "\033[2m\033[7m"
-		else:
-			style = "\033[7m" if (index == selected) else ""
+		style = ""
+		if ((index == 1 or index == 2) and not trained):
+			style += "\033[2m"
+		if (index == selected):
+			style += "\033[7m"
 		count += render_line(f" {label}", style, width)
 	return (count)
 
