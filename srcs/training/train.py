@@ -54,7 +54,7 @@ def train(
 def main(learning_rate: float = 0.1, iterations: int = 1000) -> None:
 	try:
 		print("Loading dataset: ", end="\033[s")
-		mileages, prices, lines = load_dataset("big_dataset.csv")
+		mileages, prices, lines = load_dataset("dataset.csv")
 
 		print("Training: ", end="\033[s")
 		xs, lowest, highest = normalize(mileages)
@@ -72,4 +72,4 @@ def main(learning_rate: float = 0.1, iterations: int = 1000) -> None:
 
 
 if (__name__ == "__main__"):
-	main(0.1, 10000)
+	main(0.1, 5000)
