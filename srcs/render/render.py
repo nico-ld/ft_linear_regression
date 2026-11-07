@@ -30,10 +30,13 @@ def render_separator(width: int = 50) -> int:
 	return (1)
 
 
-def render_menu(options: list[str], selected: int, width: int = 50) -> int:
+def render_menu(options: list[str], selected: int, trained: bool, width: int = 50) -> int:
 	count = 0
 	for index, label in enumerate(options):
-		style = "\033[7m" if (index == selected) else ""
+		if (index == selected and not trained and (index == 1 or index == 2)):
+			style = "\033[2m\033[7m"
+		else:
+			style = "\033[7m" if (index == selected) else ""
 		count += render_line(f" {label}", style, width)
 	return (count)
 
@@ -55,20 +58,23 @@ def clear_lines(count: int) -> int:
 	return (0)
 	
 
-
 def render_screen(
 	dataset: str,
 	thetas: tuple[float, float],
 	trained: bool,
 	options: list[str],
-	selected: int
+	selected: int,
+	message_error: str = ""
 ) -> int:
 	print("\033[?25l", end="")
 	print("\033[1mft_linear_regression\033[0m")
 	count = 1
 	render_header(dataset, thetas, trained)
 	render_separator()
-	render_menu(options, selected)
+	render_menu(options, selected, trained)
 	render_footer()
+	if (message_error):
+		print(f"\033[91m {message_error}\033[0m")
+		count += 1
 	print("\033[2m ↑/↓ move   Enter select\033[0m")
 	return (count + 1)
