@@ -6,6 +6,7 @@ from .prediction.predict import predict
 from .render.render import render_screen, clear_lines
 from .training.train import main as train_model
 from .ui.keys import read_key
+from .ui.settings import training_settings
 
 
 def get_thetas(path: str) -> tuple[float, float]:
@@ -23,9 +24,11 @@ def move_selection(selected: int, key: str, count: int) -> int:
 	return (selected)
 
 
-def run_action(name: str, dataset: str, params: tuple[float, int]) -> bool:
+def run_action(name: str, dataset: str, train_set: tuple[float, int]) -> bool:
 	if (name == "Train"):
-		train_model(params[0], params[1], dataset)
+		train_model(train_set[0], train_set[1], dataset)
+	elif (name == "Train settings"):
+		training_settings(dataset, )
 	elif (name == "Predict"):
 		predict()
 	elif (name == "Show graph"):
@@ -43,10 +46,9 @@ def wait_key() -> None:
 
 
 def run_menu(dataset: str, thetas_path: str) -> None:
-	options = ["Train", "Predict", "Show graph", "Exit"]
+	options = ["Train", "Train settings", "Predict", "Show graph", "Exit"]
 	selected, lines = 0, 0
-	learning_rate = 0.1
-	iterations = 5000
+	train_sett = (0.1, 5000)
 	message = ""
 
 	try:
@@ -67,6 +69,7 @@ def run_menu(dataset: str, thetas_path: str) -> None:
 			elif (key == "ENTER"):
 				message = ""
 				name = options[selected]
+				
 				if (options[selected] == "Exit"):
 					return
 				if (not trained and name in ("Predict", "Show graph")):
@@ -76,9 +79,7 @@ def run_menu(dataset: str, thetas_path: str) -> None:
 					print("\033[?25h", end="")
 					skip_wait = False
 					try:
-						skip_wait = run_action(
-							name, dataset, (learning_rate, iterations)
-						)
+						skip_wait = run_action(name, dataset, train_sett)
 					except KeyboardInterrupt:
 						print("\nInterrupted")
 					if (not skip_wait):

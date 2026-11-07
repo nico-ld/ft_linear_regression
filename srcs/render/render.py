@@ -53,7 +53,7 @@ def render_menu(options: list[str], selected: int, trained: bool, width: int = 5
 	count = 0
 	for index, label in enumerate(options):
 		style = ""
-		if ((index == 1 or index == 2) and not trained):
+		if (not trained and label in ("Predict", "Show graph")):
 			style += "\033[2m"
 		if (index == selected):
 			style += "\033[7m"
