@@ -71,7 +71,7 @@ def run_menu(dataset: str, thetas_path: str) -> None:
 				if (not trained and name in ("Predict", "Show graph")):
 					message = "Model not trained: run 'Train' first."
 				else:
-					line = clear_lines(lines)
+					lines = clear_lines(lines)
 					print("\033[?25h", end="")
 					try:
 						run_action(name, dataset)

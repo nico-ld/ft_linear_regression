@@ -49,10 +49,10 @@ def render_footer(width: int = 50) -> int:
 
 
 def clear_lines(count: int) -> int:
-	line = 2
+	line = 1
 
 	print("\033[1;1H", end="", flush=True)
-	while (line < count):
+	while (line <= count):
 		print("\033[0K\033[1B", end="", flush=True)
 		line += 1
 	print("\033[1;1H", end="", flush=True)
@@ -70,12 +70,12 @@ def render_screen(
 	print("\033[?25l", end="")
 	print("\033[1mft_linear_regression\033[0m")
 	count = 1
-	render_header(dataset, thetas, trained)
-	render_separator()
-	render_menu(options, selected, trained)
-	render_footer()
+	count += render_header(dataset, thetas, trained)
+	count += render_separator()
+	count += render_menu(options, selected, trained)
+	count += render_footer()
 	if (message_error):
 		print(f"\033[91m {message_error}\033[0m")
 		count += 1
-	print("\033[2m ↑/↓ move   Enter select\033[0m")
+	print(f"\033[2m ↑/↓ move   Enter select | [DEBUG] : lines printed: {count + 1}\033[0m")
 	return (count + 1)
