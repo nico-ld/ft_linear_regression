@@ -10,9 +10,9 @@ def read_key() -> str:
 	finally:
 		termios.tcsetattr(fd, termios.TCSADRAIN, saved)
 
-	if (data in (b"\x1b[A", b"\x1b0A")):
+	if (data in (b"\x1b[A", b"\x1bOA")):
 		return ("UP")
-	if (data in (b"\x1b[B", b"\x1b0B")):
+	if (data in (b"\x1b[B", b"\x1bOB")):
 		return ("DOWN")
 	if (data in (b"\n", b"\r")):
 		return ("ENTER")

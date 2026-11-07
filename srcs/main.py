@@ -3,7 +3,7 @@ import sys
 from .bonus.plot import main as show_graph
 from .model.model import load_thetas
 from .prediction.predict import predict
-from .render.render import render_screen
+from .render.render import render_screen, clear_lines
 from .training.train import main as train_model
 from .ui.keys import read_key
 
@@ -46,22 +46,26 @@ def wait_key() -> None:
 def run_menu(dataset: str, thetas_path: str) -> None:
 	options = ["Train", "Predict", "Show graph", "Exit"]
 	selected = 0
+	lines = 0
 
 	try:
 		while (True):
 			thetas = get_thetas(thetas_path)
 			trained = (thetas != (0.0, 0.0))
-			render_screen(dataset, thetas, trained, options, selected)
+			if (lines > 0):
+				clear_lines(lines)
+			lines = render_screen(dataset, thetas, trained, options, selected)
 
 			key = read_key()
 			if (key in ("UP", "DOWN")):
-				select = move_selection(selected, key, len(options))
+				selected = move_selection(selected, key, len(options))
 			elif (key == "EOF"):
 				return
 			elif (key == "ENTER"):
 				if (options[selected] == "Exit"):
 					return
-				print("\033[?25h\033[H\033[2J", end="")
+				lines = clear_lines(lines)
+				print("\033[?25h", end="")
 				try:
 					run_action(options[selected], dataset, trained)
 				except KeyboardInterrupt:
@@ -82,4 +86,5 @@ def start_model() -> None:
 
 
 if (__name__ == "__main__"):
+	print("\033[?25l\033[H\033[2J", end="")
 	start_model()
