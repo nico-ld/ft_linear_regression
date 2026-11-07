@@ -5,44 +5,23 @@ from .model.model import load_thetas
 from .prediction.predict import predict
 from .render.render import render_screen, clear_lines
 from .training.train import main as train_model
-from .ui.keys import read_key
+from .ui.utils import *
 from .ui.settings import training_settings
+from .ui.keys import read_key
 
 
-def get_thetas(path: str) -> tuple[float, float]:
-	try:
-		return (load_thetas(path))
-	except (OSError, ValueError, KeyError):
-		return (0.0, 0.0)
-
-
-def move_selection(selected: int, key: str, count: int) -> int:
-	if (key == "UP"):
-		return ((selected - 1) % count)
-	if (key == "DOWN"):
-		return ((selected + 1) % count)
-	return (selected)
-
-
-def run_action(name: str, dataset: str, train_set: tuple[float, int]) -> bool:
+def run_action(name: str, dataset: str, train_set: tuple[float, int]) -> int:
 	if (name == "Train"):
 		train_model(train_set[0], train_set[1], dataset)
 	elif (name == "Train settings"):
-		training_settings(dataset, )
+		return (training_settings(dataset, train_set))
 	elif (name == "Predict"):
 		predict()
 	elif (name == "Show graph"):
 		show_graph(dataset)
 		clear_lines(20)
-		return (True)
-	return (False)
-
-
-def wait_key() -> None:
-	message = "\n\033[2mPress any key to go back to the menu...\033[0m"
-	print(message, end="", flush=True)
-	read_key()
-	clear_lines(20)
+		return (1)
+	return (-1)
 
 
 def run_menu(dataset: str, thetas_path: str) -> None:
@@ -77,13 +56,15 @@ def run_menu(dataset: str, thetas_path: str) -> None:
 				else:
 					lines = clear_lines(lines)
 					print("\033[?25h", end="")
-					skip_wait = False
+					ret = 0
 					try:
-						skip_wait = run_action(name, dataset, train_sett)
+						ret = run_action(name, dataset, train_sett)
 					except KeyboardInterrupt:
 						print("\nInterrupted")
-					if (not skip_wait):
+					if (ret == 0):
 						wait_key()
+					elif (ret == -1):
+						break
 	
 	except KeyboardInterrupt:
 		pass

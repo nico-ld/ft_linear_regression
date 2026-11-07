@@ -1,7 +1,8 @@
 from srcs.render.render import render_screen, clear_lines
-from srcs.main import move_selection, wait_key, get_thetas
 from srcs.prediction.predict import parse_float_input
+from srcs.ui.utils import *
 from .keys import read_key
+
 
 def update_value(
 	dataset: str,
@@ -20,7 +21,7 @@ def update_value(
 
 
 def training_settings(
-		dataset: str, train_sett: tuple[float, int]
+	dataset: str, train_sett: tuple[float, int]
 ) -> int:
 	options = ["Dataset", "Learning Rate", "Iterations", "Go back"]
 	selected, lines = 0, 0
@@ -30,7 +31,7 @@ def training_settings(
 		while (True):
 			if (lines > 0):
 				clear_lines(lines)
-			lines = render_screen (
+			lines = render_screen(
 				dataset, None, False, options, selected, train_sett
 			)
 
@@ -42,11 +43,11 @@ def training_settings(
 				break
 			elif (key == "ENTER"):
 				name = options[selected]
-				
+
 				if (options[selected] == "Go back"):
 					break
 				lines = clear_lines(lines)
-				print("\033[?25h", end = "")
+				print("\033[?25h", end="")
 				try:
 					update_value(dataset, train_sett[0], train_sett[1], name)
 				except KeyboardInterrupt:
@@ -59,5 +60,7 @@ def training_settings(
 		ret = -1
 	finally:
 		print("\033[?25h")
+	if (ret >= 0):
+		clear_lines(lines)
 	return (ret)
 
