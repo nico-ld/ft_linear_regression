@@ -23,16 +23,16 @@ def move_selection(selected: int, key: str, count: int) -> int:
 	return (selected)
 
 
-def run_action(name: str, dataset: str) -> None:
-	learning_rate = 0.1
-	iterations = 5000
-
+def run_action(name: str, dataset: str, params: tuple[float, int]) -> bool:
 	if (name == "Train"):
-		train_model(learning_rate, iterations, dataset)
+		train_model(params[0], params[1], dataset)
 	elif (name == "Predict"):
 		predict()
 	elif (name == "Show graph"):
 		show_graph(dataset)
+		clear_lines(20)
+		return (True)
+	return (False)
 
 
 def wait_key() -> None:
@@ -44,8 +44,9 @@ def wait_key() -> None:
 
 def run_menu(dataset: str, thetas_path: str) -> None:
 	options = ["Train", "Predict", "Show graph", "Exit"]
-	selected = 0
-	lines = 0
+	selected, lines = 0, 0
+	learning_rate = 0.1
+	iterations = 5000
 	message = ""
 
 	try:
@@ -55,7 +56,7 @@ def run_menu(dataset: str, thetas_path: str) -> None:
 			if (lines > 0):
 				clear_lines(lines)
 			lines = render_screen(
-				dataset, thetas, trained, options, selected, message
+				dataset, thetas, trained, options, selected, None, message
 			)
 
 			key = read_key()
@@ -73,11 +74,15 @@ def run_menu(dataset: str, thetas_path: str) -> None:
 				else:
 					lines = clear_lines(lines)
 					print("\033[?25h", end="")
+					skip_wait = False
 					try:
-						run_action(name, dataset)
+						skip_wait = run_action(
+							name, dataset, (learning_rate, iterations)
+						)
 					except KeyboardInterrupt:
 						print("\nInterrupted")
-					wait_key()
+					if (not skip_wait):
+						wait_key()
 	
 	except KeyboardInterrupt:
 		pass
