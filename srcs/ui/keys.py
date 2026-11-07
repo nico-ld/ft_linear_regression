@@ -2,7 +2,7 @@ import os, sys, termios, tty
 
 
 def read_key() -> str:
-	fd = sys.stdion.fileno()
+	fd = sys.stdin.fileno()
 	saved = termios.tcgetattr(fd)
 	try:
 		tty.setcbreak(fd, termios.TCSANOW)

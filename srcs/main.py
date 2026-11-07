@@ -1,11 +1,11 @@
 import sys
 
-from bonus.plot import main as show_graph
-from model.model import load_thetas
-from prediction.predict import predict
-from render.render import render_screen
-from training.train import main as train_model
-from ui.keys import read_key
+from .bonus.plot import main as show_graph
+from .model.model import load_thetas
+from .prediction.predict import predict
+from .render.render import render_screen
+from .training.train import main as train_model
+from .ui.keys import read_key
 
 
 def get_thetas(path: str) -> tuple[float, float]:

@@ -28,10 +28,10 @@ def draw(
 	plt.show()
 
 
-def main() -> None:
+def main(dataset: str = "dataset.csv") -> None:
 	try:
 		print("Loading dataset: ", end="\033[s")
-		mileages, prices, _ = load_dataset("big_dataset.csv")
+		mileages, prices, _ = load_dataset(dataset)
 
 		theta0, theta1 = load_thetas("thetas.json")
 		line_xs, line_ys = compute_line_points(

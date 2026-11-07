@@ -51,10 +51,10 @@ def train(
 	return (theta0, theta1)
 
 
-def main(learning_rate: float = 0.1, iterations: int = 1000) -> None:
+def main(learning_rate: float = 0.1, iterations: int = 1000, dataset: str = "dataset.csv") -> None:
 	try:
 		print("Loading dataset: ", end="\033[s")
-		mileages, prices, lines = load_dataset("big_dataset.csv")
+		mileages, prices, lines = load_dataset(dataset)
 
 		print("Training: ", end="\033[s")
 		xs, lowest, highest = normalize(mileages)
