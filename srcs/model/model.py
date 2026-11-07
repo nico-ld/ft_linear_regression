@@ -17,4 +17,4 @@ def load_thetas(path: str) -> tuple[float, float]:
 
 	with open(path, 'r') as thetas:
 		thetas_dict = json.load(thetas)
-	return (thetas_dict["thetas0"], thetas_dict["thetas1"])
+	return (thetas_dict["theta0"], thetas_dict["theta1"])
