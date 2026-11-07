@@ -17,7 +17,6 @@ def draw(
 	prices: list[float],
 	line_xs: list[float],
 	line_ys: list[float],
-	output_path: str
 ) -> None:
 	fig, ax = plt.subplots()
 	ax.scatter(mileages, prices, label="data")
@@ -26,7 +25,6 @@ def draw(
 	ax.set_ylabel("price")
 	ax.set_title("Car price by mileage")
 	ax.legend()
-	fig.savefig(output_path)
 	plt.show()
 
 
@@ -34,12 +32,12 @@ def main() -> None:
 	try:
 		print("Loading dataset: ", end="\033[s")
 		mileages, prices, _ = load_dataset("big_dataset.csv")
-		
+
 		theta0, theta1 = load_thetas("thetas.json")
 		line_xs, line_ys = compute_line_points(
 			theta0, theta1, min(mileages), max(mileages)
 		)
-		draw(mileages, prices, line_xs, line_ys, "regression.png")
+		draw(mileages, prices, line_xs, line_ys)
 	except Exception as e:
 		print(f"Error: {e}")
 
