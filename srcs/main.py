@@ -19,7 +19,7 @@ def run_action(name: str, dataset: str, train_set: tuple[float, int]) -> int:
 		show_graph(dataset)
 		clear_lines(20)
 		return (1)
-	return (-1)
+	return (0)
 
 
 def run_menu(dataset: str, thetas_path: str) -> None:

@@ -1,4 +1,5 @@
-all: train predict
+all:
+	@python3 -m srcs.main
 
 train:
 	@python3 -m srcs.training.train

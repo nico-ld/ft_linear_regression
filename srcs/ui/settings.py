@@ -9,7 +9,7 @@ def check_dataset(path: str) -> None:
 	if (not os.path.isfile(path)):
 		raise ValueError(f"{path}: file not found")
 	with open(path, "r") as file:
-		lines = file.readline()
+		lines = file.readlines()
 	if (not lines or "km,price" not in lines[0]):
 		raise ValueError(f"{path}: header 'km,price' expected")
 	if (len(lines) < 3):
@@ -22,7 +22,7 @@ def ask_dataset(current: str) -> str:
 		print("Dataset unchanged.")
 		return (current)
 	check_dataset(new)
-	print("Dataset updated, the model has to trin on the new values.")
+	print("Dataset updated, the model has to train on the new values.")
 	return (new)
 
 
@@ -92,7 +92,7 @@ def training_settings(
 				lines = clear_lines(lines)
 				print("\033[?25h", end="")
 				try:
-					dataset = train_sett = update_value(
+					dataset, train_sett = update_value(
 						dataset, train_sett, name
 					)
 				except KeyboardInterrupt:
