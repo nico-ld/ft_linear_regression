@@ -1,4 +1,5 @@
 from srcs.model.model import load_thetas, estimate_price
+from srcs.training.train import main as train_model
 
 
 def parse_float_input(message: str) -> float:
@@ -7,11 +8,16 @@ def parse_float_input(message: str) -> float:
 		raise ValueError
 	return (ret)
 
-def predict() -> None:
+def predict(dataset: str = "dataset.csv") -> None:
 	try:
 		theta0, theta1 = load_thetas("thetas.json")
-		mileage = parse_float_input("Enter your car's mileage : ")
+		if (theta0 == 0.0):
+			print("Warning model was not trained")
+			print("Reload dataset for training: ", end="\033[s")
+			train_model(dataset)
+			theta0, theta1 = load_thetas("thetas.json")
 
+		mileage = parse_float_input("Enter your car's mileage : ")
 		price = estimate_price(mileage, theta0, theta1)
 		print(f"Estimate price: {round(price, 2)}$")
 	except ValueError:

@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 
 from srcs.model.model import estimate_price, load_thetas
 from srcs.training.data import load_dataset
+from srcs.training.train import main as train_model
 
 
 def compute_line_points(
@@ -34,6 +35,12 @@ def main(dataset: str = "dataset.csv") -> None:
 		mileages, prices, _ = load_dataset(dataset)
 
 		theta0, theta1 = load_thetas("thetas.json")
+		if (theta0 == 0.0):
+			print("Warning model was not trained")
+			print("Reload dataset for training: ", end="\033[s")
+			train_model(dataset)
+			theta0, theta1 = load_thetas("thetas.json")
+
 		line_xs, line_ys = compute_line_points(
 			theta0, theta1, min(mileages), max(mileages)
 		)

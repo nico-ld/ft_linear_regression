@@ -97,4 +97,4 @@ def main(dataset: str = "dataset.csv") -> None:
 
 
 if (__name__ == "__main__"):
-	main("dataset_large.csv")
+	main()
