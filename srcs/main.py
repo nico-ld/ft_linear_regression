@@ -1,4 +1,4 @@
-import sys
+import sys, time
 
 from .bonus.plot import compute_line_points, draw
 from .model.model import save_thetas, load_thetas
@@ -35,15 +35,18 @@ def train_model(
 ) -> None:
 	try:
 		print("Training: ", end="\033[s")
+		start = time.time()
 		xs, lowest, highest = normalize(mileages)
 		t0, t1 = train(
 			(xs, prices), train_sett[0], train_sett[1], dataset_size
 		)
+		end = time.time()
 		print()
 
 		theta0, theta1 = denormalize(t0, t1, lowest, highest)
 		save_thetas(theta0, theta1, thetas_path)
 
+		print(f"Training end in {round(end - start, 3)}s")
 		print("Result of training : ")
 		print(f" - Theta0 : {theta0}")
 		print(f" - Theta1 : {theta1}")

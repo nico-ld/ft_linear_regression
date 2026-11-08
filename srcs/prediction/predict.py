@@ -15,9 +15,9 @@ def predict() -> None:
 		price = estimate_price(mileage, theta0, theta1)
 		print(f"Estimate price: {round(price, 2)}$")
 	except ValueError:
-		print("Caught ValueError: Aborting")
+		print("\033[91mCaught ValueError: Aborting\033[0m")
 	except Exception as e:
-		print(f"Caught unexpected error: {e}")
+		print(f"\033[91mCaught unexpected error: {e}\033[0m")
 
 
 if (__name__ == "__main__"):
