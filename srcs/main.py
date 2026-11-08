@@ -22,7 +22,7 @@ def show_graph(
 		draw(mileages, prices, line_xs, line_ys)
 
 	except Exception as e:
-		print(f"Error: {e}")
+		print(f"\n\033[91mError: {e}\033[0m")
 		wait_key()
 
 
@@ -48,12 +48,11 @@ def train_model(
 		print(f" - Theta0 : {theta0}")
 		print(f" - Theta1 : {theta1}")
 	except Exception as e:
-		print(f"Error: {e}")
+		print(f"\n\033[91mError: {e}\033[0m")
 
 
 def run_action(
 	name: str,
-	dataset: str,
 	thetas_path: str,
 	train_sett: tuple[float, int],
 	mileages: list[float],
@@ -116,13 +115,15 @@ def run_menu(dataset: str, thetas_path: str) -> None:
 							if (dataset != previous):
 								save_thetas(0.0, 0.0, thetas_path)
 								thetas = tuple((0.0, 0.0))
-								mileages,
-								prices,
-								dataset_size = get_dataset_values(dataset)
+								(
+									mileages,
+									prices,
+									dataset_size
+								) = get_dataset_values(dataset)
+								clear_lines(2)
 						else:
 							ret = run_action(
 								name,
-								dataset,
 								thetas_path,
 								train_sett,
 								mileages,

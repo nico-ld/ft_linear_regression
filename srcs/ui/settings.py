@@ -22,7 +22,6 @@ def ask_dataset(current: str) -> str:
 		print("Dataset unchanged.")
 		return (current)
 	check_dataset(new)
-	print("Dataset updated, the model has to train on the new values.")
 	return (new)
 
 
@@ -99,7 +98,9 @@ def training_settings(
 					print("\nInterrupted")
 				except ValueError as error:
 					print(f"\n\033[91m{name} unchanged: {error}\033[0m")
-				wait_key()
+					wait_key()
+				finally:
+					clear_lines(10)
 
 	except KeyboardInterrupt:
 		ret = -1
