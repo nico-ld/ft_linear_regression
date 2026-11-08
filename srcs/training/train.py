@@ -51,7 +51,7 @@ def train(
 	return (theta0, theta1)
 
 
-def main(dataset: str = "dataset.csv", learning_rate: float = 0.1, iterations: int = 1000) -> None:
+def main(dataset: str = "dataset.csv", learning_rate: float = 0.25, iterations: int = 2000) -> None:
 	try:
 		print("Loading dataset: ", end="\033[s")
 		mileages, prices, lines = load_dataset(dataset)

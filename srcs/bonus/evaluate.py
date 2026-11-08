@@ -1,8 +1,8 @@
 import math
 
-from srcs.model.model import estimate_price, load_thetas, split_dataset
-from srcs.training.train import main as train_model
-from srcs.training.data import load_dataset
+from srcs.model.model import estimate_price, save_thetas, split_dataset
+from srcs.training.train import train
+from srcs.training.data import load_dataset, normalize, denormalize
 
 
 def predict_all(
@@ -71,10 +71,10 @@ def print_evaluation(
 	print(f"R2 (objective > 90%)  : {r2_style}{r2:.2f}%\033[0m")
 
 
-def main(dataset: str = "dataset.csv") -> None:
+def main(dataset: str = "dataset.csv", learning_rate: float = 0.25, iterations: int = 2000) -> None:
 	try:
 		print("Loading dataset: ", end="\033[s")
-		mileages, prices, _ = load_dataset(dataset)
+		mileages, prices, lines = load_dataset(dataset)
 		(
 			mileages,
 			prices,
@@ -82,12 +82,13 @@ def main(dataset: str = "dataset.csv") -> None:
 			test_prices
 		) = split_dataset(mileages, prices, 0.80)
 
-		theta0, theta1 = load_thetas("thetas.json")
-		if (theta0 == 0.0):
-			print("Warning model was not trained")
-			print("Reload dataset for training: ", end="\033[s")
-			train_model(dataset)
-			theta0, theta1 = load_thetas("thetas.json")
+		print("Training: ", end="\033[s")
+		xs, lowest, highest = normalize(mileages)
+		t0, t1 = train((xs, prices), learning_rate, iterations, lines)
+
+		print()
+		theta0, theta1 = denormalize(t0, t1, lowest, highest)
+		save_thetas(theta0, theta1, "thetas.json")
 
 		predictions = predict_all(test_mileages, theta0, theta1)
 		print_evaluation(predictions, test_prices)
