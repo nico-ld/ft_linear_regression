@@ -1,34 +1,86 @@
 import sys
 
-from .bonus.plot import main as show_graph
-from .model.model import save_thetas
+from .bonus.plot import compute_line_points, draw
+from .model.model import save_thetas, load_thetas
 from .prediction.predict import predict
 from .render.render import render_screen, clear_lines
-from .training.train import main as train_model
+from .training.train import train
+from .training.data import normalize, denormalize
 from .ui.utils import *
 from .ui.settings import training_settings
 from .ui.keys import read_key
 
 
-def run_action(name: str, dataset: str, train_set: tuple[float, int]) -> int:
+def show_graph(
+	thetas_path: str, mileages: list[float], prices: list[float]
+) -> None:
+	try:
+		theta0, theta1 = load_thetas(thetas_path)
+		line_xs, line_ys = compute_line_points(
+			theta0, theta1, min(mileages), max(mileages)
+		)
+		draw(mileages, prices, line_xs, line_ys)
+
+	except Exception as e:
+		print(f"Error: {e}")
+		wait_key()
+
+
+def train_model(
+	train_sett: tuple[float, int],
+	thetas_path: str,
+	mileages: list[float],
+	prices: list[float],
+	dataset_size: int
+) -> None:
+	try:
+		print("Training: ", end="\033[s")
+		xs, lowest, highest = normalize(mileages)
+		t0, t1 = train(
+			(xs, prices), train_sett[0], train_sett[1], dataset_size
+		)
+		print()
+
+		theta0, theta1 = denormalize(t0, t1, lowest, highest)
+		save_thetas(theta0, theta1, thetas_path)
+
+		print("Result of training : ")
+		print(f" - Theta0 : {theta0}")
+		print(f" - Theta1 : {theta1}")
+	except Exception as e:
+		print(f"Error: {e}")
+
+
+def run_action(
+	name: str,
+	dataset: str,
+	thetas_path: str,
+	train_sett: tuple[float, int],
+	mileages: list[float],
+	prices: list[float],
+	dataset_size: int
+) -> int:
 	if (name == "Train"):
-		train_model(train_set[0], train_set[1], dataset)
+		train_model(
+			train_sett, thetas_path, mileages, prices, dataset_size
+		)
 	elif (name == "Predict"):
 		predict()
 	elif (name == "Show graph"):
-		show_graph(dataset)
-		clear_lines(20)
+		show_graph(thetas_path, mileages, prices)
 		return (1)
 	return (0)
 
 
 def run_menu(dataset: str, thetas_path: str) -> None:
 	options = ["Train", "Train settings", "Predict", "Show graph", "Exit"]
+	mileages, prices, dataset_size = get_dataset_values(dataset)
 	selected, lines = 0, 0
 	train_sett = (0.1, 5000)
 	message = ""
 
 	try:
+		print("\033[?25l\033[H\033[2J", end="")
 		while (True):
 			thetas = get_thetas(thetas_path)
 			trained = (thetas != (0.0, 0.0))
@@ -63,8 +115,20 @@ def run_menu(dataset: str, thetas_path: str) -> None:
 							)
 							if (dataset != previous):
 								save_thetas(0.0, 0.0, thetas_path)
+								thetas = tuple((0.0, 0.0))
+								mileages,
+								prices,
+								dataset_size = get_dataset_values(dataset)
 						else:
-							ret = run_action(name, dataset, train_sett)
+							ret = run_action(
+								name,
+								dataset,
+								thetas_path,
+								train_sett,
+								mileages,
+								prices,
+								dataset_size
+							)
 					except KeyboardInterrupt:
 						print("\nInterrupted")
 					if (ret == 0):
@@ -86,5 +150,4 @@ def start_model() -> None:
 
 
 if (__name__ == "__main__"):
-	print("\033[?25l\033[H\033[2J", end="")
 	start_model()
