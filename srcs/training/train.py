@@ -51,7 +51,7 @@ def train(
 	return (theta0, theta1)
 
 
-def main(learning_rate: float = 0.1, iterations: int = 1000, dataset: str = "dataset.csv") -> None:
+def main(dataset: str = "dataset.csv", learning_rate: float = 0.1, iterations: int = 1000) -> None:
 	try:
 		print("Loading dataset: ", end="\033[s")
 		mileages, prices, lines = load_dataset(dataset)
@@ -72,4 +72,4 @@ def main(learning_rate: float = 0.1, iterations: int = 1000, dataset: str = "dat
 
 
 if (__name__ == "__main__"):
-	main(0.1, 5000)
+	main()
