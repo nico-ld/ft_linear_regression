@@ -8,7 +8,7 @@ def parse_float_input(message: str) -> float:
 		raise ValueError
 	return (ret)
 
-def predict(dataset: str = "dataset.csv") -> None:
+def predict(dataset: str = "dataset/dataset.csv") -> None:
 	try:
 		theta0, theta1 = load_thetas("thetas.json")
 		if (theta0 == 0.0):

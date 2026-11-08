@@ -29,7 +29,7 @@ def draw(
 	plt.show()
 
 
-def main(dataset: str = "dataset.csv") -> None:
+def main(dataset: str = "dataset/dataset.csv") -> None:
 	try:
 		print("Loading dataset: ", end="\033[s")
 		mileages, prices, _ = load_dataset(dataset)

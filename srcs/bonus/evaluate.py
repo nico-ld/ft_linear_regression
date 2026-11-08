@@ -71,7 +71,7 @@ def print_evaluation(
 	print(f"R2 (objective > 90%)  : {r2_style}{r2:.2f}%\033[0m")
 
 
-def main(dataset: str = "dataset.csv", learning_rate: float = 0.25, iterations: int = 2000) -> None:
+def main(dataset: str = "dataset/dataset.csv", learning_rate: float = 0.25, iterations: int = 2000) -> None:
 	try:
 		print("Loading dataset: ", end="\033[s")
 		mileages, prices, lines = load_dataset(dataset)
