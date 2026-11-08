@@ -54,14 +54,14 @@ def main(dataset: str = "dataset.csv") -> None:
 			train_model(dataset)
 			theta0, theta1 = load_thetas("thetas.json")
 
-		predictions = predict_all(mileages, theta0, theta1)
-		mse = mean_squared_error(prices, predictions)
+		predictions = predict_all(test_mileages, theta0, theta1)
+		mse = mean_squared_error(test_prices, predictions)
 
 		print("\nEvalutions metrics:")
 		print(f"MSE  : {mse:.2f}")
 		print(f"RMSE : {math.sqrt(mse):.2f}")
-		print(f"MAE  : {mean_absolute_error(prices, predictions):.2f}")
-		print(f"R2   : {r_squared(prices, predictions):.4f}")
+		print(f"MAE  : {mean_absolute_error(test_prices, predictions):.2f}")
+		print(f"R2   : {r_squared(test_prices, predictions):.4f}")
 	except Exception as e:
 		print(f"Error: {e}")
 

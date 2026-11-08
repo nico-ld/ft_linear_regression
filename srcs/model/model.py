@@ -1,5 +1,4 @@
-import json
-import os
+import json, os, random
 
 
 def estimate_price(mileage: float, theta0: float, theta1: float) -> float:
@@ -21,16 +20,20 @@ def load_thetas(path: str) -> tuple[float, float]:
 
 
 def split_dataset(
-	mileages: list[float], prices: list[float], test_part: float
+	mileages: list[float],
+	prices: list[float],
+	train_part: float,
+	seed: int = 7
 ) -> tuple[list[float], list[float], list[float], list[float]]:
-	start_index = int(len(mileages) * test_part)
-	test_mileages = []
-	test_prices = []
+	indexes = list(range(len(mileages)))
+	random.Random(seed).shuffle(indexes)
 
-	for index in range(start_index, len(mileages)):
-		test_mileages.append(mileages[index])
-		test_prices.append(prices[index])
-	for index in range(len(mileages) - 1, start_index, -1):
-		mileages.pop(index)
-		prices.pop(index)
-	return (mileages, prices, test_mileages, test_prices)
+	cut = int(len(indexes) * train_part)
+	train = indexes[:cut]
+	test = indexes[cut:]
+	return (
+		[mileages[i] for i in train],
+		[prices[i] for i in train],
+		[mileages[i] for i in test],
+		[prices[i] for i in test],
+	)

@@ -1,14 +1,15 @@
-import sys, time
+import sys, time, math
 
-from .bonus.plot import compute_line_points, draw
-from .model.model import save_thetas, load_thetas
-from .prediction.predict import predict
+from .model.model import save_thetas, load_thetas, split_dataset
 from .render.render import render_screen, clear_lines
-from .training.train import train
+from .bonus.plot import compute_line_points, draw
 from .training.data import normalize, denormalize
-from .ui.utils import *
 from .ui.settings import training_settings
+from .prediction.predict import predict
+from .training.train import train
+from .bonus.evaluate import *
 from .ui.keys import read_key
+from .ui.utils import *
 
 
 def show_graph(
@@ -30,15 +31,21 @@ def train_model(
 	train_sett: tuple[float, int],
 	thetas_path: str,
 	mileages: list[float],
-	prices: list[float],
-	dataset_size: int
+	prices: list[float]
 ) -> None:
 	try:
+		(
+			mileages,
+			prices,
+			valid_mileages,
+			valid_prices
+		) = split_dataset(mileages, prices, 0.80)
+
 		print("Training: ", end="\033[s")
 		start = time.time()
 		xs, lowest, highest = normalize(mileages)
 		t0, t1 = train(
-			(xs, prices), train_sett[0], train_sett[1], dataset_size
+			(xs, prices), train_sett[0], train_sett[1], len(xs)
 		)
 		end = time.time()
 		print()
@@ -46,10 +53,24 @@ def train_model(
 		theta0, theta1 = denormalize(t0, t1, lowest, highest)
 		save_thetas(theta0, theta1, thetas_path)
 
-		print(f"Training end in {round(end - start, 3)}s")
+		print(f"Training duration: {round(end - start, 3)}s")
 		print("Result of training : ")
 		print(f" - Theta0 : {theta0}")
-		print(f" - Theta1 : {theta1}")
+		if (theta1 > 0):
+			print(f"\033[91m - Theta1 : {theta1}\033[0m")
+			return
+		print(f" - Theta1 : {theta1}\033[0m")
+		print()
+
+		predictions = predict_all(valid_mileages, theta0, theta1)
+		mse = mean_squared_error(valid_prices, predictions)
+
+		print("Precision Evaluation :")
+		print(f"MSE  : {mse:.2f}")
+		print(f"RMSE : {math.sqrt(mse):.2f}")
+		print(f"MAE  : {mean_absolute_error(valid_prices, predictions):.2f}")
+		print(f"R2   : {r_squared(valid_prices, predictions):.4f}")
+
 	except Exception as e:
 		print(f"\n\033[91mError: {e}\033[0m")
 
@@ -59,12 +80,11 @@ def run_action(
 	thetas_path: str,
 	train_sett: tuple[float, int],
 	mileages: list[float],
-	prices: list[float],
-	dataset_size: int
+	prices: list[float]
 ) -> int:
 	if (name == "Train"):
 		train_model(
-			train_sett, thetas_path, mileages, prices, dataset_size
+			train_sett, thetas_path, mileages, prices
 		)
 	elif (name == "Predict"):
 		predict()
@@ -76,9 +96,9 @@ def run_action(
 
 def run_menu(dataset: str, thetas_path: str) -> None:
 	options = ["Train", "Train settings", "Predict", "Show graph", "Exit"]
-	mileages, prices, dataset_size = get_dataset_values(dataset)
+	mileages, prices = get_dataset_values(dataset)
 	selected, lines = 0, 0
-	train_sett = (0.1, 5000)
+	train_sett = (0.1, 2000)
 	message = ""
 
 	try:
@@ -118,11 +138,7 @@ def run_menu(dataset: str, thetas_path: str) -> None:
 							if (dataset != previous):
 								save_thetas(0.0, 0.0, thetas_path)
 								thetas = tuple((0.0, 0.0))
-								(
-									mileages,
-									prices,
-									dataset_size
-								) = get_dataset_values(dataset)
+								mileages, prices = get_dataset_values(dataset)
 								clear_lines(2)
 						else:
 							ret = run_action(
@@ -130,8 +146,7 @@ def run_menu(dataset: str, thetas_path: str) -> None:
 								thetas_path,
 								train_sett,
 								mileages,
-								prices,
-								dataset_size
+								prices
 							)
 					except KeyboardInterrupt:
 						print("\nInterrupted")

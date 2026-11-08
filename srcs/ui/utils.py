@@ -26,12 +26,12 @@ def wait_key() -> None:
 	clear_lines(20)
 
 
-def get_dataset_values(dataset: str) -> tuple[list[float], list[float], int]:
+def get_dataset_values(dataset: str) -> tuple[list[float], list[float]]:
 	try:
 		print("Loading dataset: ", end="\033[s")
-		mileages, prices, dataset_size = load_dataset(dataset)
+		mileages, prices, _ = load_dataset(dataset)
 	except Exception as err:
 		print(f"Caught Error: {err}")
 		print("Set values to None")
-		mileages, prices, dataset_size = None, None, None
-	return (mileages, prices, dataset_size)
+		mileages, prices = None, None
+	return (mileages, prices)
