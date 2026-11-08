@@ -36,6 +36,41 @@ def r_squared(prices: list[float], predictions: list[float]) -> float:
 	return (1 - ss_res / ss_tot)
 
 
+def get_color(
+	objectives: list[float], value: float, smaller: bool = True
+) -> str:
+	colors = [
+		"\033[92m", "\033[32m", "\033[93m", "\033[38;2;255;120;0m", "\033[91m"
+	]
+
+	for level in range(len(objectives)):
+		if (smaller and value <= objectives[level]):
+			return (colors[level])
+		elif (not smaller and value >= objectives[level]):
+			return (colors[level])
+	return (colors[4])
+
+
+def print_evaluation(
+	predictions: list[float], test_prices: list[float]
+) -> None:
+	mean = sum(test_prices) / len(test_prices)
+	rmse = math.sqrt(mean_squared_error(test_prices, predictions))
+	mae = mean_absolute_error(test_prices, predictions)
+	r2 = r_squared(test_prices, predictions) * 100
+
+	rmse_percent = rmse / mean * 100
+	mae_percent = mae / mean * 100
+	rmse_style = get_color([7.0, 12.0, 18.0, 25.0], rmse_percent)
+	mae_style = get_color([5.0, 10.0, 15.0, 22.0], mae_percent)
+	r2_style = get_color([90.0, 80.0, 60.0, 30.0], r2, False)
+
+	print("Precision Evaluation :")
+	print(f"RMSE (objective < 7%) : {rmse_style}{rmse_percent:.2f}%\033[0m")
+	print(f"MAE (objective < 5%)  : {mae_style}{mae_percent:.2f}%\033[0m")
+	print(f"R2 (objective > 90%)  : {r2_style}{r2:.2f}%\033[0m")
+
+
 def main(dataset: str = "dataset.csv") -> None:
 	try:
 		print("Loading dataset: ", end="\033[s")
@@ -55,13 +90,8 @@ def main(dataset: str = "dataset.csv") -> None:
 			theta0, theta1 = load_thetas("thetas.json")
 
 		predictions = predict_all(test_mileages, theta0, theta1)
-		mse = mean_squared_error(test_prices, predictions)
+		print_evaluation(predictions, test_prices)
 
-		print("\nEvalutions metrics:")
-		print(f"MSE  : {mse:.2f}")
-		print(f"RMSE : {math.sqrt(mse):.2f}")
-		print(f"MAE  : {mean_absolute_error(test_prices, predictions):.2f}")
-		print(f"R2   : {r_squared(test_prices, predictions):.4f}")
 	except Exception as e:
 		print(f"Error: {e}")
 

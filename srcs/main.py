@@ -1,13 +1,13 @@
 import sys, time, math
 
 from .model.model import save_thetas, load_thetas, split_dataset
+from .bonus.evaluate import predict_all, print_evaluation
 from .render.render import render_screen, clear_lines
 from .bonus.plot import compute_line_points, draw
 from .training.data import normalize, denormalize
 from .ui.settings import training_settings
 from .prediction.predict import predict
 from .training.train import train
-from .bonus.evaluate import *
 from .ui.keys import read_key
 from .ui.utils import *
 
@@ -63,13 +63,7 @@ def train_model(
 		print()
 
 		predictions = predict_all(valid_mileages, theta0, theta1)
-		mse = mean_squared_error(valid_prices, predictions)
-
-		print("Precision Evaluation :")
-		print(f"MSE  : {mse:.2f}")
-		print(f"RMSE : {math.sqrt(mse):.2f}")
-		print(f"MAE  : {mean_absolute_error(valid_prices, predictions):.2f}")
-		print(f"R2   : {r_squared(valid_prices, predictions):.4f}")
+		print_evaluation(predictions, valid_prices)
 
 	except Exception as e:
 		print(f"\n\033[91mError: {e}\033[0m")
@@ -98,7 +92,7 @@ def run_menu(dataset: str, thetas_path: str) -> None:
 	options = ["Train", "Train settings", "Predict", "Show graph", "Exit"]
 	mileages, prices = get_dataset_values(dataset)
 	selected, lines = 0, 0
-	train_sett = (0.1, 2000)
+	train_sett = (0.25, 2000)
 	message = ""
 
 	try:
