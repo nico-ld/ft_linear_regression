@@ -159,7 +159,7 @@ def start_model() -> None:
 	if (not sys.stdin.isatty()):
 		print("Error: an interactive terminal is required")
 		return
-	run_menu("dataset.csv", "thetas.json")
+	run_menu("dataset/dataset.csv", "thetas.json")
 
 
 if (__name__ == "__main__"):
