@@ -8,17 +8,19 @@ def gradient_step(
 	learning_rate: float,
 	lines: int
 ) -> tuple[float, float]:
+	X = 0
+	Y = 0
 	sum_error = 0.0
 	sum_error_x = 0.0
 
 	index = 0
 	while (index < len(coord[0]) and index < len(coord[1])):
-		x = coord[0][index]
-		y = coord[1][index]
+		mileage = coord[X][index]
+		price = coord[Y][index]
 
-		error = estimate_price(x, thetas[0], thetas[1]) - y
+		error = estimate_price(mileage, thetas[0], thetas[1]) - price
 		sum_error += error
-		sum_error_x += error * x
+		sum_error_x += error * mileage
 
 		index += 1
 
