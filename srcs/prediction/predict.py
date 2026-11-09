@@ -13,7 +13,7 @@ def predict(dataset: str = "dataset/dataset.csv") -> None:
 		theta0, theta1 = load_thetas("thetas.json")
 		if (theta0 == 0.0):
 			print("Warning model was not trained")
-			print("Reload dataset for training: ", end="\033[s")
+			print("Loading dataset: ", end="\033[s")
 			train_model(dataset)
 			theta0, theta1 = load_thetas("thetas.json")
 

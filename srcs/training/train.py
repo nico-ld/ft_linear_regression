@@ -9,7 +9,7 @@ def gradient_step(
 	lines: int
 ) -> tuple[float, float]:
 	X = 0
-	Y = 0
+	Y = 1
 	sum_error = 0.0
 	sum_error_x = 0.0
 
