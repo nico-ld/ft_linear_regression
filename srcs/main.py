@@ -21,6 +21,7 @@ def show_graph(
 			theta0, theta1, min(mileages), max(mileages)
 		)
 		draw(mileages, prices, line_xs, line_ys)
+		clear_lines(20)
 
 	except Exception as e:
 		print(f"\n\033[91mError: {e}\033[0m")
@@ -133,7 +134,7 @@ def run_menu(dataset: str, thetas_path: str) -> None:
 								save_thetas(0.0, 0.0, thetas_path)
 								thetas = tuple((0.0, 0.0))
 								mileages, prices = get_dataset_values(dataset)
-								clear_lines(2)
+								clear_lines(10)
 						else:
 							ret = run_action(
 								name,
