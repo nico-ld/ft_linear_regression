@@ -14,11 +14,7 @@ plot:
 	@python3 -m srcs.bonus.plot
 
 clean:
-	@rm -rf srcs/__pycache__
-	@rm -rf srcs/bonus/__pycache__
-	@rm -rf srcs/model/__pycache__
-	@rm -rf srcs/prediction/__pycache__
-	@rm -rf srcs/render/__pycache__
-	@rm -rf srcs/training/__pycache__
-	@rm -rf srcs/ui/__pycache__
+	@printf "Cleaning workspace..\033[2m\n"
+	@find -type d -name "__pycache__" -prune -printf "\tRemoving: " -print -exec rm -rf -- {} +
+	@printf "\033[0mWorkspace cleaned !\n"
 	@rm -f thetas.json
